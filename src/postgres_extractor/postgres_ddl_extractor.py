@@ -42,7 +42,7 @@ class PostgresExtractor:
                 raise ValueError("There is no connection to db.")
 
             cursor = self.connection.cursor()
-            # Recupera tutte le tabelle nel schema 'public'
+            # All 'public' tables
             cursor.execute("""
                 SELECT table_name
                 FROM information_schema.tables
@@ -50,25 +50,20 @@ class PostgresExtractor:
                 AND table_type = 'BASE TABLE';
             """)
             tabelle = [row[0] for row in cursor.fetchall()]
-            #print("Tabelle trovate:")
-            #for tabella in tabelle:
-            #    print(f"- {tabella}")
 
-            #print("\nDDL delle tabelle:")
             for tabella in tabelle:
-                #print(f"\n-- DDL per {tabella} --")
-                # Usa pg_dump per ottenere la DDL della tabella
+                # pg_dump command
                 comando = [
                     "pg_dump",
-                    "-h", self.host,          # Host (ad esempio 'localhost' per il container)
-                    "-p", str(self.port),     # Porta (ad esempio 5432)
-                    "-U", self.user,          # Utente del database
-                    "-d", self.database,      # Nome del database
-                    "-t", f"public.{tabella}",  # Specifica la tabella
-                    "--schema-only"      # Solo schema (DDL)
+                    "-h", self.host,          
+                    "-p", str(self.port),     
+                    "-U", self.user,          
+                    "-d", self.database,      
+                    "-t", f"public.{tabella}",  
+                    "--schema-only"      
                 ]
 
-                # Esegui il comando pg_dump
+                # pg_dump command
                 risultato = subprocess.run(
                     comando,
                     text=True,
@@ -76,7 +71,6 @@ class PostgresExtractor:
                     env={"PGPASSWORD": self.password}  # Variabile d'ambiente per la password
                 )
                 if risultato.returncode == 0:
-                    #print(risultato.stdout)  # Stampa la DDL della tabella
                     final_dump[f"{self.database}.{tabella}"] = str(risultato)
                 else:
                     print(f"Error to obtain DDL for {tabella}: {risultato.stderr}")
@@ -121,27 +115,37 @@ class PostgresExtractor:
                 WHERE table_schema = 'public' AND table_name = '{table}'
                 GROUP BY table_name;
             """)
-            ddls.append(cursor.fetchone()[0])
+            ddl = cursor.fetchone()[0]
+            ddl = ddl.replace(f"CREATE TABLE {table}", f"CREATE TABLE banca.{table}")
+            ddls.append(ddl)
         return ddls
 
 
     @staticmethod
     def extract_ddl_from_dump(dump_output) -> list:
         dump_output = str(dump_output.values())
-        # Lista per contenere le DDL estratte
         ddl_list = []
-        #print("dump output in funzione", dump_output)
-        # Espressione regolare per cercare le DDL che iniziano con CREATE TABLE e finiscono con il primo punto e virgola
-        pattern = r'(CREATE TABLE[\s\S]+?;)'  # Regex per trovare tutto ciò che inizia con "CREATE TABLE" e finisce con ";"
-
-        # Trova tutte le occorrenze del pattern
+        pattern = r'(CREATE TABLE[\s\S]+?;)'  
         ddl_matches = re.findall(pattern, dump_output, re.IGNORECASE)
 
-        # Aggiungi ogni DDL trovata alla lista
         for ddl in ddl_matches:
-            ddl_list.append(ddl)  # Rimuovi gli spazi extra ai lati
-
+            ddl_list.append(ddl)  
         return ddl_list
+
+
+    @staticmethod
+    def save_ddl_single_file(saving_path: str, ddl:list):
+        folder_path = os.path.join(saving_path, 'postgres_ddl')
+
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        
+        ddls = "\n\n".join(ddl)
+
+        filename = os.path.join(folder_path,f"ddl_postgres.sql")
+        with open(filename, 'w') as file:
+            file.write(ddls)
+            print(f"file {filename} saved with success")
 
 
     @staticmethod
