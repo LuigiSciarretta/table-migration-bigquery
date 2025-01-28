@@ -57,7 +57,7 @@ class MySQlExtractor:
                     cursor.execute(f"SHOW CREATE TABLE {table}")
                     result = cursor.fetchone()
                     ddl = result[1]
-                    print(ddl)
+                    #print(ddl)
                     ddl_with_database = ddl.replace(f"CREATE TABLE `{table}`", f"CREATE TABLE `{db}`.`{table}`")
                     final_ddls.append(ddl_with_database)
         
