@@ -173,3 +173,32 @@ def download_folder_subfolder_check_file_exists(bucket_name, subfolder_name, des
                     blob.download_to_file(file_obj)
             except PermissionError as e:
                 print(f"Errore di permessi: {e}")
+
+
+
+
+
+def download_sql_files_on_destination(bucket_name, subfolder_name, destination_folder):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    # Lista di tutti i blob nel bucket con un determinato prefisso (sottocartella)
+    blobs = bucket.list_blobs(prefix=subfolder_name)
+
+    for blob in blobs:
+        # Estrai solo il nome del file, ignorando le sottocartelle
+        file_name = os.path.basename(blob.name)
+        destination_file_name = os.path.join(destination_folder, file_name)
+
+        if file_name.endswith('.sql'):
+            # Controlla se il file esiste già
+            if os.path.exists(destination_file_name):
+                print(f"Il file {file_name} è già presente nella cartella {destination_folder}.")
+            else:
+                try:
+                    # Scarica il blob nel file locale
+                    with open(destination_file_name, "wb") as file_obj:
+                        blob.download_to_file(file_obj)
+                    print(f"Scaricato: {file_name}")
+                except PermissionError as e:
+                    print(f"Errore di permessi: {e}")
