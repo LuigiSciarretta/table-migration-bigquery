@@ -20,7 +20,6 @@ protobuf==5.29.3
 psycopg2-binary==2.9.10
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
-pyspark==3.4.1
 python-dateutil==2.9.0.post0
 requests==2.32.3
 rsa==4.9
