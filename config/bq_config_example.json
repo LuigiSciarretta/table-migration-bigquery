@@ -1,0 +1,43 @@
+{
+    "general": 
+    {
+        "json_auth": "XXX",
+        "bucket_name": "XXX",
+        "project_id" : "XXX"
+    },
+
+    "upload_folder" : 
+    {
+        "local_folder_path": "XXX",
+        "gcs_folder_destination": "XXX"
+    },
+
+    "translation_task" : 
+    {
+        "mysql" : 
+        {
+        "gcs_input_path" : "XXX",
+        "gcs_output_path": "XXX",
+        "origin_dialect" : "XXX"
+        },
+        "postgres" : 
+        {
+        "gcs_input_path" : "XXX",
+        "gcs_output_path": "XXX",
+        "origin_dialect" : "XXX"
+        }
+    },
+
+    "download_folder" : 
+    {
+        "bucket_folder_path" : "XXX",
+        "local_destination_path" :"XXX"
+
+    },
+    
+    "execute_ddl": {
+        "ddl_mysql_path" : "XXX",
+        "ddl_postgres_path" : "XXX"
+    }
+
+}
