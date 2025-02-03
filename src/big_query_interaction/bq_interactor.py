@@ -1,5 +1,6 @@
 from google.cloud import bigquery_migration_v2
 from google.cloud import storage
+from google.cloud import bigquery
 import os
 import time
 
@@ -202,3 +203,51 @@ def download_sql_files_on_destination(bucket_name, subfolder_name, destination_f
                     print(f"Scaricato: {file_name}")
                 except PermissionError as e:
                     print(f"Errore di permessi: {e}")
+
+
+
+# Funzione per creare un dataset se non esiste
+def create_dataset(dataset_name, project_id):
+    client = bigquery.Client()
+    dataset_id = f"{project_id}.{dataset_name}"
+    try:
+        client.get_dataset(dataset_id)  # Controlla se il dataset esiste
+        print(f"Dataset '{dataset_name}' esiste già.")
+    except Exception:
+        dataset = bigquery.Dataset(dataset_id)
+        dataset.location = "EU"  # Specifica la location del dataset
+        client.create_dataset(dataset, exists_ok=True)
+        print(f"Creato il dataset '{dataset_name}'.")
+
+
+
+def execute_ddl(ddl_content, project_id):
+    import re
+    
+    # Inizializza il client BigQuery
+    client = bigquery.Client()
+
+    # Estrai i nomi dei dataset e le istruzioni di creazione
+    dataset_table_pattern = re.compile(r"CREATE TABLE (\w+)\.(\w+)")
+    matches = dataset_table_pattern.findall(ddl_content)
+
+    # Ottieni i dataset unici
+    datasets = set(match[0] for match in matches)
+
+    # Crea i dataset mancanti
+    for dataset in datasets:
+        print("dataset:", dataset)
+        create_dataset(dataset, project_id)
+
+    # Esegui le istruzioni DDL
+    ddl_statements = ddl_content.split(";")
+    for statement in ddl_statements:
+        statement = statement.strip()
+        if statement:  # Evita statement vuoti
+            try:
+                query_job = client.query(statement)
+                query_job.result()  # Attende il completamento
+                print(f"Eseguita la query: {statement[:50]}...")
+            except Exception as e:
+                print(f"Errore durante l'esecuzione della query: {statement[:50]}...")
+                print(str(e))
