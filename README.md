@@ -1,26 +1,21 @@
-# 📌 **On prem Table migration on BigQuery**
+# 📌 On-Prem Table Migration to BigQuery
+This project contains a tool for migrating on-premises tables to BigQuery, written in Python.
+In particular, the current modules allow the migration of table DDLs from PostgreSQL and MySQL to BigQuery.
 
-This project houses the on premises table migration tool on BigQuery written in Python.
-In particolar, the actual modules allow to migrate table (DDL) from Postgres and Mysql on Biguqery.
+# 🚀 Features
+✔️ On-Prem Extraction - Extracts DDLs from an on-premises database using a configuration JSON file.
 
+✔️ GCP SQL Translation - Interacts with Google Cloud APIs to translate SQL queries.
 
-# 🚀 **Features**
+✔️ DDL Deployment on BigQuery - Deploys translated tables to BigQuery.
 
-✔️ Onprem Extraction - extraction of DDL on Prem from a database configuration json file
-
-✔️ GCP Interaction for SQL Translation - GCP interaction with API for SQL Translation
-
-✔️ Deploy DDL on Big - Tables deploy after pon BigQuery after the translation
-
-
-# 🛠️ **Technologies used**
+# 🛠️ Technologies Used
 
 [✔️] Language: Python / SQL
 
-[✔️] Database: PostgreSQL / MySQL 
+[✔️] Databases: PostgreSQL / MySQL
 
-
-# 📦 **Installing**
+# 📦 **Installation**
 
     # Clone repo
     git clone https://github.com/LuigiSciarretta/table-migration-bigquery.git
@@ -31,17 +26,19 @@ In particolar, the actual modules allow to migrate table (DDL) from Postgres and
     # Install dependencies in your virtual env
     pip install -r requirements.txt  
 
-# 📄 **Short guide**
+# 📄 Quick Guide
 
-The project is divided into several "main" python ones that deal with separate operations. There is no single centralized main.
-The different .py files call modules defined in src that take care of DDL extraction from on prem systems and interaction with Google Cloud Platform via Python API.
-The flow involves the following scripts in order:
-- onprem_extraction.py
-- upload_gcp.py
-- sql_translation_task.py
-- download.py
-- execute_ddl
+The project consists of multiple Python scripts, each handling a separate operation. There is no single centralized main script.
+The .py files invoke modules located in the src directory, which handle DDL extraction from on-premises databases and interaction with Google Cloud Platform via its Python API.
 
-The first script needs to be passed db_config.json as a parameter, which defines the connection parameters to the on prem DBs.
-Subsequent scripts need the bq_config.json as a parameter, which defines the authentication and info needed for interaction with GCP.
+The workflow follows this sequence of scripts:
+
+1️⃣ onprem_extraction.py
+2️⃣ upload_gcp.py
+3️⃣ sql_translation_task.py
+4️⃣ download.py
+5️⃣ execute_ddl.py
+
+The first script requires db_config.json as a parameter, which contains connection details for the on-premises databases.
+The subsequent scripts require bq_config.json, which contains authentication details and configuration settings for interacting with GCP.
 
