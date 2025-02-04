@@ -7,13 +7,16 @@ In particolar, the actual modules allow to migrate table (DDL) from Postgres and
 # 🚀 **Features**
 
 ✔️ Onprem Extraction - extraction of DDL on Prem from a database configuration json file
+
 ✔️ GCP Interaction for SQL Translation - GCP interaction with API for SQL Translation
+
 ✔️ Deploy DDL on Big - Tables deploy after pon BigQuery after the translation
 
 
 # 🛠️ **Technologies used**
 
 [✔️] Language: Python / SQL
+
 [✔️] Database: PostgreSQL / MySQL 
 
 
