@@ -1,0 +1,18 @@
+{
+    "databases": {
+        "postgresql": {
+            "database": "XXX",
+            "user": "XXX",
+            "password": "XXX",
+            "host": "XXX",
+            "port": "XXX"
+        },
+        "mysql": {
+            "database": "XXX",
+            "user": "XXX",
+            "password": "XXX",
+            "host": "XXX",
+            "port": "XXX"
+        }
+    }
+}
