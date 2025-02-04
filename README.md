@@ -33,11 +33,11 @@ The .py files invoke modules located in the src directory, which handle DDL extr
 
 The workflow follows this sequence of scripts:
 
-1️⃣ onprem_extraction.py
-2️⃣ upload_gcp.py
-3️⃣ sql_translation_task.py
-4️⃣ download.py
-5️⃣ execute_ddl.py
+- 1️⃣ onprem_extraction.py
+- 2️⃣ upload_gcp.py
+- 3️⃣ sql_translation_task.py
+- 4️⃣ download.py
+- 5️⃣ execute_ddl.py
 
 The first script requires db_config.json as a parameter, which contains connection details for the on-premises databases.
 The subsequent scripts require bq_config.json, which contains authentication details and configuration settings for interacting with GCP.
