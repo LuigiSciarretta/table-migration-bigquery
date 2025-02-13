@@ -2,11 +2,12 @@ from google.cloud import bigquery_migration_v2
 from google.cloud import storage
 from google.cloud import bigquery
 import os
+import re
 import time
 
 
 def set_credential(credential):
-    # Imposta le credenziali
+    # Imposto le credenziali
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential
 
 
@@ -65,20 +66,20 @@ def create_full_migration_workflow(
     
     parent = f"projects/{project_id}/locations/eu"
     
-    # Construct a BigQuery Migration client object.
+    # BigQuery Migration client 
     client = bigquery_migration_v2.MigrationServiceClient()
 
-    # Caso per MySQL
+    # Caso MySQL
     if origin_dialect.lower() == 'mysql':
-        # Set the source dialect to MySQL SQL.
+        # definisco dialetto sorgente come MySQL SQL
         source_dialect = bigquery_migration_v2.Dialect()
         source_dialect.mysql_dialect = bigquery_migration_v2.MySQLDialect()
         
-        # Set the target dialect to BigQuery dialect.
+        # definisco dialetto destinazione come BigQuery SQL
         target_dialect = bigquery_migration_v2.Dialect()
         target_dialect.bigquery_dialect = bigquery_migration_v2.BigQueryDialect()    
         
-        # Prepare the config proto.
+        # definisco i dettagli di configurazione 
         translation_config = bigquery_migration_v2.TranslationConfigDetails(
             gcs_source_path=gcs_input_path,
             gcs_target_path=gcs_output_path,
@@ -86,23 +87,23 @@ def create_full_migration_workflow(
             target_dialect=target_dialect,
         )
 
-        # Prepare the task.
+        # definisco il task di traduzione
         migration_task = bigquery_migration_v2.MigrationTask(type_="Translation_MySQL2BQ", translation_config_details=translation_config)
 
-        # Prepare the workflow.
+        # definisco il workflow di traduzione
         workflow = bigquery_migration_v2.MigrationWorkflow(display_name="Traduzione-MySQL2BQ")
 
-    # Caso per PostgreSQL
+    # Caso PostgreSQL
     elif origin_dialect.lower() == 'postgresql':
-        # Set the source dialect to PostgreSQL SQL.
+        # definisco dialetto sorgente come  PostgreSQL SQL
         source_dialect = bigquery_migration_v2.Dialect()
         source_dialect.postgresql_dialect = bigquery_migration_v2.PostgresqlDialect()
         
-        # Set the target dialect to BigQuery dialect.
+        # # definisco dialetto destinazione come BigQuery SQL
         target_dialect = bigquery_migration_v2.Dialect()
         target_dialect.bigquery_dialect = bigquery_migration_v2.BigQueryDialect()
         
-        # Prepare the config proto.
+        # definisco i dettagli di configurazione 
         translation_config = bigquery_migration_v2.TranslationConfigDetails(
             gcs_source_path=gcs_input_path,
             gcs_target_path=gcs_output_path,
@@ -110,18 +111,18 @@ def create_full_migration_workflow(
             target_dialect=target_dialect,
         )
 
-        # Prepare the task.
+        # definisco il task di traduzione
         migration_task = bigquery_migration_v2.MigrationTask(type_="Translation_Postgres2BQ", translation_config_details=translation_config)
 
-        # Prepare the workflow.
+        # definisco il workflow di traduzione
         workflow = bigquery_migration_v2.MigrationWorkflow(display_name="Traduzione-Postgres2BQ")
 
     else:
         raise ValueError("Dialect non supportato. Usa 'mysql' o 'postgresql' come origine.")
 
-    workflow.tasks["translation-task"] = migration_task  # type: ignore
+    workflow.tasks["translation-task"] = migration_task  
 
-    # Prepare the API request to create a migration workflow.
+    # Preparo l'API request per creare il migration workflow
     request = bigquery_migration_v2.CreateMigrationWorkflowRequest(
         parent=parent,
         migration_workflow=workflow,
@@ -132,7 +133,7 @@ def create_full_migration_workflow(
     print("Created workflow:")
     print(response.display_name)
 
-    # Continua a controllare lo stato del workflow fino a quando non è completato
+    # Continuo a controllare lo stato del workflow fino a quando non è completato
     while True:
         workflow = client.get_migration_workflow(name=response.name)
         print("Current state:")
@@ -222,7 +223,7 @@ def create_dataset(dataset_name, project_id):
 
 
 def execute_ddl(ddl_content, project_id):
-    import re
+
     
     # Inizializza il client BigQuery
     client = bigquery.Client()

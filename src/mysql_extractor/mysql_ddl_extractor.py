@@ -6,8 +6,7 @@ import os
 
 class MySQlExtractor:
     
-    def __init__(self, user, password, host, port): #database, 
-        #self.database = database
+    def __init__(self, user, password, host, port): 
         self.user = user
         self.password = password
         self.host = host
@@ -19,8 +18,7 @@ class MySQlExtractor:
         try:
             self.connection = mysql.connector.connect(
             host = self.host,  
-            port = self.port,
-            #database = self.database               
+            port = self.port,              
             user = self.user,        
             password = self.password)
 
@@ -44,15 +42,15 @@ class MySQlExtractor:
                 raise ValueError("There is no connection to db.")
             cursor = self.connection.cursor()
 
-            #uso il singolo db
+            # uso il singolo db
             for db in databases:
                 cursor.execute(f"USE {db};")
                 
-                #ottengo le tabelle
+                # ottengo le tabelle
                 cursor.execute("SHOW TABLES")
                 tables = [table[0] for table in cursor.fetchall()]
 
-                #ottengo le ddl per tabella
+                # ottengo le ddl per tabella
                 for table in tables:
                     cursor.execute(f"SHOW CREATE TABLE {table}")
                     result = cursor.fetchone()
