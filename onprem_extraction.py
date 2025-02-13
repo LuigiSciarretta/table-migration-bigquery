@@ -34,16 +34,20 @@ def extract_mysql(config, saving_ddl_path):
     except Exception as e:
         print(f"[ERRORE] Impossibile estrarre DDL da MySQL: {e}")
 
+
+
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Uso: python main.py <config_file> <saving_ddl_path>")
         sys.exit(1)
 
-    # Leggo i parametri da linea di comando
+    # leggo i parametri da linea di comando
     config_file = sys.argv[1]
     saving_ddl_path = sys.argv[2]
 
-    # Leggo il file di configurazione JSON
+    # leggo il file di configurazione JSON
     try:
         with open(config_file, 'r') as f:
             config = json.load(f)
@@ -54,7 +58,7 @@ if __name__ == '__main__':
         print(f"[ERRORE] File di configurazione non valido: {e}")
         sys.exit(1)
 
-    # Processa ogni database nel file di configurazione
+    # estraggo le DDL dai databases Onprem
     databases = config.get("databases", {})
     if "postgresql" in databases:
         print("[INFO] Inizio estrazione DDL per PostgreSQL.")

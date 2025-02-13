@@ -68,7 +68,7 @@ class PostgresExtractor:
                     comando,
                     text=True,
                     capture_output=True,
-                    env={"PGPASSWORD": self.password}  # Variabile d'ambiente per la password
+                    env={"PGPASSWORD": self.password}  
                 )
                 if risultato.returncode == 0:
                     final_dump[f"{self.database}.{tabella}"] = str(risultato)
