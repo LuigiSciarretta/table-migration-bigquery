@@ -20,15 +20,23 @@ if __name__ == '__main__':
 
     on_prem_ddl = config_file.get("execute_ddl", {})
     if 'ddl_postgres_path' in on_prem_ddl:
-        file_path = config_file['execute_ddl']['ddl_postgres_path']
+        file_path_pgres = config_file['execute_ddl']['ddl_postgres_path']
+    if 'ddl_mysql_path' in on_prem_ddl:
+        file_path_mysql = config_file['execute_ddl']['ddl_mysql_path']
+
 
     # Autentizazione tramite service account
     gcp.set_credential(sa)
 
     # leggo le DDL 
-    with open(file_path, "r") as ddl_file:
+    with open(file_path_pgres, "r") as ddl_file:
         ddl_content = ddl_file.read()
-    
-    # eseguo il deploy su BigQuery
+    # eseguo il deploy su BigQuery delle DDL Postgres
+    gcp.execute_ddl(ddl_content, project_id)
+
+    # leggo le DDL 
+    with open(file_path_mysql, "r") as ddl_file:
+        ddl_content = ddl_file.read()
+    # eseguo il deploy su BigQuery delle DDL Postgres
     gcp.execute_ddl(ddl_content, project_id)
     
